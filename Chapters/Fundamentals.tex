@@ -1,0 +1,101 @@
+\chapter{Fundamentals}
+This section covers the essential academic knowledge needed to understand this paper, providing a brief overview of the topic and introducing the key concepts, definitions, models, theories, and technology. By the end of this section, the reader should have a solid understanding of the paper's topic and be able to follow the argument. This section assumes prior knowledge of fellow students and focuses on reviewing general basics and providing more detailed explanations of specialist topics. References are included to support the content.
+
+\section{Blockchain}
+A blockchain is a decentralised, distributed digital ledger that records transactions across multiple computers. It ensures data security, transparency, and integrity by using cryptographic techniques. The following section will delve into what a blockchain is, how it works, and the key concepts and technology behind it. We will first focus on Bitcoin, the first blockchain (a white paper released in 2008) and one of the most widely used today. Then, we will move forward to Ethereum, another prominent blockchain released in 2013.
+
+\subsection{Bitcoin}
+Bitcoin, introduced by the pseudonymous person or group of people known as Satoshi Nakamoto in 2008, is the first practical blockchain implementation \cite{nakamoto2008bitcoin}. The Bitcoin blockchain was launched in 2009 and served as a digital ledger for recording all Bitcoin transactions. Each block in the chain contains a cryptographic hash of the previous block, a timestamp, and transaction data. This structure ensures the integrity of the previous block and verifies the order of transactions \cite{swan2015blockchain}.
+
+Bitcoin's blockchain is maintained by a decentralised network of nodes that validate and add new transactions to the ledger. This process is known as mining and relies on a consensus algorithm called Proof of Work (PoW). Miners compete to solve complex cryptographic puzzles, and the first miner to solve the puzzle adds the new block to the chain and receives a reward in the form of newly minted bitcoins \cite{antonopoulos2014mastering}. The PoW algorithm ensures that the blockchain is secure and resistant to tampering.
+
+\subsection{Ethereum}
+Ethereum is a public, open-source, decentralised platform that runs smart contracts: applications that execute precisely as programmed without any possibility of fraud or third-party interference \cite{buterin2013ethereum}. The platform comprises two core components: Ethereum's blockchain and the Ethereum Virtual Machine (EVM), which operates on the Ethereum network. The Ethereum blockchain is a global, decentralised computer capable of executing code as programmed, while the EVM is a virtual machine that runs smart contracts on the Ethereum network \cite{wood2014ethereum}.
+
+Ethereum expands the capabilities of traditional blockchains like Bitcoin by enabling developers to create decentralised applications (dApps) and smart contracts \cite{swan2015blockchain}. These applications operate on the Ethereum network and are generally open-source and decentralised. Furthermore, Ethereum facilitates the creation of decentralised autonomous organisations (DAOs) \cite{mougayar2016business}.
+
+In Ethereum, transactions and contract executions require "gas" fees to prevent spam and allocate resources on the network. Gas fees are paid in Ether (ETH), the native cryptocurrency of the Ethereum network \cite{antonopoulos2018mastering}.
+
+\subsection{Computation And Turing-Complete}
+A Turing-complete system can perform any computation with enough time and resources \cite{turing1936computable}. Ethereum, with its Ethereum Virtual Machine (EVM), is Turing-complete, which means it can execute any arbitrary algorithm if sufficient resources are available \cite{buterin2013ethereum}. This capability allows developers to create diverse applications and smart contracts on the Ethereum platform, making it more versatile than more straightforward, non-Turing-complete blockchains like Bitcoin.
+
+\subsection{Smart Contracts}
+Smart contracts are self-executing contracts with the terms of the agreement directly written into code \cite{szabo1997formalizing}. They facilitate, verify, or enforce the negotiation or performance of a contract, allowing credible transactions without third parties. These transactions are trackable and irreversible \cite{kosba2016hawk}. 
+Smart contracts are composed of several components: the contract creator, who creates the contract and sets the conditions; the signatories, who are the parties that agree to the terms of the contract; the conditions, which are the rules that the signatories must follow; and the actions to be taken, which are the tasks that the signatories must perform. Smart contracts run on the Ethereum platform, enabling various use cases, such as token creation, decentralized finance (DeFi), and decentralised applications (dApps) \cite{mougayar2016business2}.
+
+\subsection{Fees}
+In blockchain networks, fees are typically required for various transactions and operations. These fees serve as an incentive for the network's miners or validators to process and validate transactions, as well as a mechanism to prevent spam and malicious activity. In Ethereum, fees are called "gas," and they are paid in the native cryptocurrency Ether (ETH) \cite{wood2014ethereum}. Gas fees are determined by the complexity of the transaction or operation, and they can fluctuate based on network congestion and demand. As a result, users need to consider the gas fees when interacting with the Ethereum network, especially when executing smart contracts or participating in decentralised applications \cite{wood2014ethereum}.
+
+\subsection{Tokens}
+Tokens are digital assets on a blockchain network and can represent various types of value. They can be fungible, meaning they are interchangeable and have the same value, like a digital currency, or non-fungible, meaning they are unique and cannot be exchanged on a one-to-one basis, like digital collectables. Ethereum is a popular platform for creating and managing tokens due to its support for smart contracts and various token standards \cite{vogelsteller2015erc20}.
+
+\subsubsection{Non-Fungible}
+Non-fungible tokens (NFTs) are unique, indivisible digital assets that cannot be exchanged on a one-to-one basis with other tokens. NFTs can represent digital art, collectables, virtual real estate, and other valuable digital assets. Unlike fungible tokens, where each unit is interchangeable and has the same value, non-fungible tokens have distinct properties that make them unique and valuable in their own right \cite{entriken2018erc721}. NFTs are commonly used for digital art and collectables, and they have gained significant attention due to high-profile sales and celebrity endorsements. Ethereum is the primary platform for creating and trading NFTs due to its support for various token standards, such as ERC-721 and ERC-1155, which enable the creation and management of non-fungible tokens.
+
+\subsubsection{ERC-721}
+ERC-721 is a widely adopted Ethereum token standard for non-fungible tokens. It defines a set of rules and functions that enable creating, managing, and transferring unique tokens on the Ethereum blockchain \cite{entriken2018erc721}. ERC-721 tokens can represent digital assets such as digital art, virtual goods, and collectables. The standard has gained popularity due to its ability to provide a robust framework for creating unique tokens with individual attributes and provenance information \cite{entriken2018erc721}. This standard has been instrumental in the growth of the NFT market, as it allows developers to build and deploy smart contracts that manage non-fungible tokens, enabling a wide range of applications and use cases in the digital asset space.
+
+\subsubsection{ERC-1155}
+ERC-1155 is an Ethereum token standard that extends the functionality of ERC-721 and ERC-20, allowing for the creation and management of both fungible and non-fungible tokens within a single, smart contract \cite{vogelsteller2015erc20}. This standard enables greater efficiency and flexibility in token management, reducing the need for deploying multiple contracts for different types of tokens. ERC-1155 tokens can represent various digital assets, including gaming items, digital art, and collectables, and can be traded on marketplaces that support the standard \cite{openzeppelinerc1155}. By allowing developers to create and manage multiple token types within a single contract, ERC-1155 optimises the process. It reduces the gas fees associated with token transactions, making it an attractive option for projects that require a diverse range of digital assets.
+
+\subsubsection{Fungible}
+Fungible tokens are a type of cryptographic token that are interchangeable with one another, meaning that each token is identical in specification and value \cite{vogelsteller2015erc20}. This characteristic enables fungible tokens to be used as a medium of exchange, as they can be easily exchanged for an equal quantity of the same token. These tokens are commonly used for various purposes, such as representing currencies, points, or rewards in a digital ecosystem. Fungible tokens are often built on platforms like Ethereum, which support the creation and management of tokens using well-established token standards such as ERC-20.
+
+\subsubsection{ERC-20}
+The Ethereum Request for Comments (ERC-20) is a widely adopted token standard on the Ethereum blockchain for creating and issuing fungible tokens \cite{vogelsteller2015erc20}. The ERC-20 standard establishes a common set of rules and functions for token contracts, allowing developers to create easily compatible tokens with other ERC-20-compliant applications, such as wallets and decentralised exchanges.
+
+The ERC-20 standard defines a set of six functions and two events that a token contract must implement. These functions and events enable developers to manage token transactions, query the balance of an account, and transfer tokens between accounts.
+
+Some of the critical functions specified in the ERC-20 standard include:
+\begin{enumerate}
+\item	“totalSupply”: Returns the total number of tokens in circulation.
+\item	balanceOf: Returns the token balance of a specified address.
+\item	transfer: Transfers a specific amount of tokens from the sender's address to a recipient's address.
+\item	approve: Allows the owner of an address to authorize a third party to spend a specific amount of tokens on their behalf.
+\item	allowance: Returns the number of tokens a third party can spend on behalf of a specified address.
+\item	transferFrom: Allows a third party to transfer tokens from one address to another, provided they have been granted approval.
+\end{enumerate}
+The widespread adoption of the ERC-20 standard has led to increased interoperability and ease of use within the Ethereum ecosystem, facilitating the development and deployment of various decentralised applications that utilise fungible tokens \cite{vogelsteller2015erc20}.
+
+\section{Zero-Knowledge Proof}
+In cryptography, a zero-knowledge proof (ZKP) or zero-knowledge protocol is a method by which one party (the prover) can prove to another party (the verifier) that they know a value x without conveying any information about what that value is. The essence of zero-knowledge proofs is that it is trivial to prove that one possesses knowledge of certain information by simply revealing it; the challenge is to prove such knowledge without revealing the information itself or any additional information \cite{goldreich1986proofs}.
+
+ZKPs must satisfy the following properties. The first is completeness, where the prover can convince the verifier if given a true statement. The second is soundness, where a false statement cannot convince a verifier that a malicious prover was sent. Finally, zero-knowledge, in which the statement is true or false, is the only information revealed and nothing else.
+
+Zero-knowledge proofs are often used in conjunction with cryptographic protocols to ensure no leaking of certain information during the execution of the protocol. They have gained significant attention in recent years, particularly in the context of blockchain technology and privacy-preserving applications \cite{bensasson2014zerocash}.
+
+\subsection{Non-interactive zero-knowledge proofs}
+Non-interactive zero-knowledge proofs (NIZK) are a type of zero-knowledge proof in which the interaction between the prover and the verifier is limited to a single message from the prover to the verifier. In contrast to interactive zero-knowledge proofs, where the prover and verifier engage in multiple rounds of communication, NIZK proofs do not require any back-and-forth communication between the parties \cite{blum1988noninteractive}. This property makes NIZK proofs particularly well-suited for applications where communication is limited or expensive, such as blockchain networks and secure messaging systems.
+
+\subsection{ZK-SNARKs}
+Zero-Knowledge Succinct Non-Interactive Argument of Knowledge (ZK-SNARK) is a type of non-interactive zero-knowledge proof that allows a prover to demonstrate the validity of a statement succinctly and efficiently. ZK-SNARKs have gained significant attention in blockchain technology due to their ability to provide privacy and scalability \cite{bensasson2013snarks}.
+
+The term "succinct" refers to the fact that ZK-SNARK proofs are small and can be verified quickly, making them practical for real-world applications. ZK-SNARKs achieve this efficiency through advanced cryptographic techniques, such as elliptic curve pairings and homomorphic encryption \cite{groth2016size}.
+
+One of the primary applications of ZK-SNARKs is in privacy-preserving cryptocurrencies, such as Zcash, which uses ZK-SNARKs to enable private transactions. With ZK-SNARKs, users can prove that they possess the necessary funds to perform a transaction without revealing the actual amounts or addresses involved, thereby maintaining the privacy of the users and the transaction details \cite{hopwood2020zcash}.
+
+Additionally, ZK-SNARKs can improve the scalability of blockchain networks by offloading complex computations off-chain and providing a succinct proof that can be verified on-chain. This reduces the burden on the network, allowing for more efficient processing of transactions \cite{bensasson2019scalable}.
+
+\subsection{ZK-STARKs}
+Zero-Knowledge Scalable Transparent ARguments of Knowledge (ZK-STARK) is another type of non-interactive zero-knowledge proof that offers many of the benefits of ZK-SNARKs but with added transparency and post-quantum security \cite{bensasson2019aurora}. Unlike ZK-SNARKs, which rely on a trusted setup phase and utilise cryptographic assumptions that may be vulnerable to quantum computers, ZK-STARKs are based on more conservative cryptographic assumptions and do not require a trusted setup.
+
+ZK-STARKs use a combination of error-correcting codes, hash functions, and interactive oracle proofs to create a succinct and efficient proof system. The main advantage of ZK-STARKs over ZK-SNARKs is their transparency. They do not rely on a trusted setup, eliminating the need for a common reference string and reducing the potential for manipulation or collusion \cite{bensasson2018scalable}.
+
+Another advantage of ZK-STARKs is their resistance to quantum attacks, making them a more future-proof solution for privacy and scalability in the context of blockchain technology and other cryptographic applications. However, ZK-STARK proofs are typically more extensive and more computationally intensive to generate than ZK-SNARK proofs, which can be a trade-off for some applications \cite{bensasson2020primer}.
+
+ZK-STARKs have potential use cases in various industries, including finance, healthcare, and supply chain management, where privacy and data integrity are paramount. They are also being researched for their potential to improve the scalability and privacy of blockchain networks, similar to ZK-SNARKs \cite{maller2019sonic}.
+
+\subsubsection{Semaphores}
+In the context of zero-knowledge proofs and cryptography, Semaphores refer to a privacy-preserving signalling mechanism that enables users to prove membership in a group without revealing their identity \cite{bunz2018bulletproofs}. Semaphores utilise zero-knowledge proofs to maintain the anonymity of users while allowing them to prove that they belong to a specific group or set. This enables various applications, such as anonymous voting systems, secure messaging, and privacy-preserving authentication.
+
+Semaphore constructions typically involve Merkle trees and zero-knowledge proof systems like ZK-SNARKs or ZK-STARKs. A group administrator generates a Merkle tree with the public keys of all group members, and each member receives their corresponding Merkle proof. To signal their membership, a user generates a zero-knowledge proof that attests to possessing a valid Merkle proof without revealing the specific public key or identity \cite{idrees2019zkay}.
+
+The Semaphore construction ensures that only authorised users can generate valid proofs, preventing unauthorized users from pretending to be part of the group. Moreover, the zero-knowledge aspect of Semaphore ensures that the user's identity remains hidden, providing strong privacy guarantees.
+
+Semaphores have potential applications in various domains where privacy and authentication are crucial, such as secure voting systems, whistleblowing platforms, and anonymous credential systems \cite{benarroch2020improved}.
+
+\subsubsection{Circoms}
+Circom is a domain-specific language (DSL) and compiler for creating arithmetic circuits \cite{jorda2019circom}. These circuits are essential for constructing zero-knowledge proofs, as they allow developers to create complex cryptographic proofs without an in-depth understanding of the underlying mathematics. Circom enables developers to write human-readable code for arithmetic circuits, which is then compiled into a more efficient representation that can be used with various zero-knowledge proof systems, such as ZK-SNARKs and ZK-STARKs.
+
+Circom simplifies creating circuits by allowing developers to use familiar programming constructs, such as loops and conditionals, while automatically handling low-level circuit optimisations. The resulting circuits can be used to create and verify zero-knowledge proofs that attest to the correctness of specific statements without revealing any underlying information. This functionality has been used in various applications, including privacy-preserving smart contracts, anonymous voting systems, and confidential asset transfers \cite{maller2019sonic2}.
+
