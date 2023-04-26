@@ -23,17 +23,21 @@
 % *) V0.5: 8.8.2014, WK: Literaturquellen überarbeitet und angepasst
 % *) V0.4: 4.8.2014, WK: Initalversion in SVN eingespielt
 %
-\documentclass[MMR,Master,english]{twbook}%\documentclass[Bachelor,BMR,ngerman]{twbook}
+\documentclass[MSE,Master,english]{twbook}%\documentclass[Bachelor,BMR,ngerman]{twbook}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
 %
 % Hier biblatex & Biber konfigurieren; Vergessen Sie nicht, dass Sie biber verwenden müssen um eine Bibliothek zu erzeugen
 %
-\usepackage[backend=biber, style=numeric]{biblatex}
+\usepackage[backend=biber, sorting=none, style=numeric]{biblatex}
 \addbibresource{Literatur.bib}
 \usepackage{float}
 \usepackage{pgf-umlsd}
+\usepackage{csquotes}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning}
+\usetikzlibrary{positioning}
 
 %
 % Bei Bedarf bitte hier die Syntax-Highlightings anpassen
@@ -83,19 +87,8 @@
 %\secondsupervisor[Begutachter]{Titel Vorname Name, Titel}
 %\secondsupervisor[Begutachterinnen]{Titel Vorname Name, Titel}
 \place{Wien}
-\kurzfassung{\blindtext}
-\schlagworte{Schlagwort1, Schlagwort2, Schlagwort3, Schlagwort4}
-\outline{
-In recent years, privacy has become an increasingly important issue in society. With the advent of the Internet, the great boom of blockchain technology and the proliferation of personal data, the need to protect our information has never been greater. One way to achieve privacy is through the use of zero-knowledge proof. Zero-knowledge proof is a mathematical method by which one party (the prover) can prove to another party (the verifier) that they know a particular piece of information without revealing any other information. 
-
-The thesis aims to prove ownership of a blockchain-based non-fungible token (a unique digital representation of tangible or intangible objects, usually NFTs) without compromising the owner's identity. The Ethereum network, the most prevalent blockchain technology in the market, will be the targeted system. The thesis addresses the problem of people maintaining the anonymity of their digital assets. At the same time, they may have multiple addresses (digital wallets), of which they do not want to be public knowledge that they are the owners.
-
-The steps to resolve these issues were theoretical research, current frameworks or libraries research and selection, architecture design of the solution, implementation and testing. The first part was researching for a bibliography and reading. The second was scouting the Internet for the current state of the art in the field of zero knowledge. Moreover, seeing which libraries and frameworks exist at the current date of the research. In the third part, once the frameworks and libraries were selected, it was time to propose an application architecture to solve the problem. The fourth part used the Agile methodology to create multiple iterations of the product and test it with users. Finally, we used usability testing and benchmarks to see the application's performance of the product.
-
-A conclusion after all these steps is that the current state of the art of zero-knowledge can implement practical use cases in the real world as generating the proof of ownership of a blockchain NFT without compromising the owner's identity. However, it has limitations; given the strategy used in this thesis, we can only prove these in static ways and not dynamically. However, other implementations can be dynamic without using a blockchain snapshot.
-}
-\keywords{Keyword1, Keyword2, Keyword3, Keyword4}
-\acknowledgements{\blindtext}
+\input{Chapters/Abstract}
+\input{Chapters/Acknowledgements}
 
 \begin{document}
 
@@ -139,9 +132,13 @@ A conclusion after all these steps is that the current state of the art of zero-
 
 \chapter*{\listacroname}
 \begin{acronym}[XXXXX]
-    \acro{ABC}[ABC]{Alphabet}
-    \acro{WWW}[WWW]{world wide web}
-    \acro{ROFL}[ROFL]{Rolling on floor laughing}
+\acro{BTC}[BTC]{Bitcoin}
+\acro{Ethereum}[ETH]{Ethereum}
+\acro{EVM}[EVM]{Ethereum Virtual Machine}
+\acro{NFT}[NFT]{Non-Fungible Token}
+\acro{SSR}[SST]{Server Side Rendering}
+\acro{PaaS}[PaaS]{Platform as a Service}
+\acro{CI/CD}[CI/CD]{Continuous Integration / Continuous Deployment}
 \end{acronym}
 
 %
@@ -149,7 +146,459 @@ A conclusion after all these steps is that the current state of the art of zero-
 %
 \clearpage
 \appendix
-\chapter{Anhang A}
-\clearpage
-\chapter{Anhang B}
+
+\chapter{POAP Smart Contract}
+\begin{lstlisting}[language=Java, name={POAP Smart Contract}, label={sc:poapContract}]
+// SPDX-License-Identifier: AGPL-3.0
+pragma solidity ^0.5.2;
+
+import "zos-lib/contracts/Initializable.sol";
+import "openzeppelin-eth/contracts/token/ERC721/ERC721.sol";
+import "openzeppelin-eth/contracts/token/ERC721/ERC721Enumerable.sol";
+import "openzeppelin-eth/contracts/token/ERC721/IERC721Metadata.sol";
+import "./PoapRoles.sol";
+import "./PoapPausable.sol";
+
+/**
+ * @title POAP contract in Ethereum
+ * @dev Mainnet point of interaction with POAP
+ * - Users can:
+ *   # Add Event Organizer
+ *   # Mint token for an event
+ *   # Batch Mint
+ *   # Burn Tokens if admin
+ *   # Pause contract if admin
+ *   # Unpause contract if admin
+ *   # ERC721 full interface (base, metadata, enumerable)
+ * - To be covered by a proxy contract
+ * @author POAP
+ * - Developers:
+ *   # Agustin Lavarello
+ *   # Rodrigo Manuel Navarro Lajous
+ *   # Ramiro Gonzales
+**/
+contract Poap is Initializable, ERC721, ERC721Enumerable, PoapRoles, PoapPausable {
+   
+    /**
+     * @dev Emmited when token is created
+     */
+    event EventToken(uint256 eventId, uint256 tokenId);
+
+    // Token name
+    string private _name;
+
+    // Token symbol
+    string private _symbol;
+
+    // Base token URI
+    string private _baseURI;
+
+    // Last Used id (used to generate new ids)
+    uint256 private lastId;
+
+    // Event Id for each token
+    mapping(uint256 => uint256) private _tokenEvent;
+
+
+    bytes4 private constant _INTERFACE_ID_ERC721_METADATA = 0x5b5e139f;
+
+    /**
+     * @dev Gets the token name
+     * @return string representing the token name
+     */
+    function name() external view returns (string memory) {
+        return _name;
+    }
+
+    /**
+     * @dev Gets the token symbol
+     * @return string representing the token symbol
+     */
+    function symbol() external view returns (string memory) {
+        return _symbol;
+    }
+
+    /**
+     * @dev Gets the Event Id for the token
+     * @param tokenId ( uint256 ) The Token Id you want to query
+     * @return uint256 representing the Event id for the token
+     */
+    function tokenEvent(uint256 tokenId) public view returns (uint256) {
+        return _tokenEvent[tokenId];
+    }
+
+    /**
+     * @dev Gets the Token Id and Event Id for a given index of the tokens list of the requested owner
+     * @param owner ( address ) Owner address of the token list to be queried
+     * @param index ( uint256 ) Index to be accessed of the requested tokens list
+     * @return ( uint256, uint256 ) Token Id and Event Id for the given index of the tokens list owned by the requested address
+     */
+    function tokenDetailsOfOwnerByIndex(address owner, uint256 index) public view returns (uint256 tokenId, uint256 eventId) {
+        tokenId = tokenOfOwnerByIndex(owner, index);
+        eventId = tokenEvent(tokenId);
+    }
+
+    /**
+     * @dev Gets URI for the token metadata
+     * @param tokenId ( uint256 ) The Token Id you want to get the URI
+     * @return ( string ) URI for the token metadata 
+     */
+    function tokenURI(uint256 tokenId) external view returns (string memory) {
+        uint eventId = _tokenEvent[tokenId];
+        return _strConcat(_baseURI, _uint2str(eventId), "/", _uint2str(tokenId), "");
+    }
+
+    /**
+     * @dev Sets Base URI for the token metadata.
+     * Requires 
+     * - The msg sender to be the admin
+     * - The contract does not have to be paused
+     * @param baseURI ( string ) The base URI to change
+     */
+    function setBaseURI(string memory baseURI) public onlyAdmin whenNotPaused {
+        _baseURI = baseURI;
+    }
+
+    /**
+     * @dev Approves another address to transfer the given token ID (Implements ERC71)
+     * Wrapper for function extended from ERC721 
+     * Requires 
+     * - The msg sender to be the owner, approved, or operator
+     * - The contract does not have to be paused
+     * @param to ( address ) The addres to be approved for the given token ID
+     * @param tokenId ( uint256 ) ID of the token to be approved
+     */
+    function approve(address to, uint256 tokenId) public whenNotPaused {
+        super.approve(to, tokenId);
+    }
+
+    /**
+     * @dev Sets or unsets the approval of a given operator (Implements ERC71)
+     * Wrapper for function extended from ERC721
+     * Requires 
+     * - The msg sender to be the owner, approved, or operator
+     * - The contract does not have to be paused
+     * @param to ( address ) The address of the operator to set the approval
+     * @param approved ( bool ) Represents the status of the approval to be set
+     */
+    function setApprovalForAll(address to, bool approved) public whenNotPaused {
+        super.setApprovalForAll(to, approved);
+    }
+
+    /**
+     * @dev Transfers the ownership of a given token ID to another address
+     * Wrapper for function extended from ERC721
+     * Requires 
+     * - The msg sender to be the owner, approved, or operator
+     * - Contract not paused
+     * @param from ( address ) The address of the current owner of the token
+     * @param to ( address ) The address to receive the ownership of the given token ID
+     * @param tokenId ( uint256 ) ID of the token to be transferred
+    */
+    function transferFrom(address from, address to, uint256 tokenId) public whenNotPaused {
+        super.transferFrom(from, to, tokenId);
+    }
+
+    /**
+     * @dev Safely transfers the ownership of a given token ID to another address (Implements ERC71)
+     * Wrapper for function extended from ERC721
+     * Requires 
+     * - The msg sender to be the owner, approved, or operator
+     * - The contract does not have to be paused
+     * @param from ( address ) The address of the current owner of the token
+     * @param to ( address ) The address to receive the ownership of the given token ID
+     * @param tokenId ( uint256 ) ID of the token to be transferred
+    */
+    function safeTransferFrom(address from, address to, uint256 tokenId) public whenNotPaused {
+        super.safeTransferFrom(from, to, tokenId);
+    }
+
+    /**
+     * @dev Safely transfers the ownership of a given token ID to another address (Implements ERC71)
+     * Wrapper for function extended from ERC721 
+     * Requires 
+     * - The msg sender to be the owner, approved, or operator
+     * - The contract does not have to be paused
+     * @param from ( address ) The address of the current owner of the token
+     * @param to ( address ) The address to receive the ownership of the given token ID
+     * @param tokenId ( uint256 ) ID of the token to be transferred
+     * @param _data ( bytes ) Data to send along with a safe transfer check
+    */
+    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory _data) public whenNotPaused {
+        super.safeTransferFrom(from, to, tokenId, _data);
+    }
+
+    /**
+     * @dev Mint token to address
+     * @param eventId ( uint256 ) EventId for the new token
+     * @param to ( address ) The address that will receive the minted tokens.
+     * @return A boolean that indicates if the operation was successful.
+     */
+    function mintToken(uint256 eventId, address to)
+    public whenNotPaused onlyEventMinter(eventId) returns (bool)
+    {
+        lastId += 1;
+        return _mintToken(eventId, lastId, to);
+    }
+
+    /**
+     * @dev Mint specific token to address.
+     * Requires 
+     * - The msg sender to be the admin, or event minter for the specific event Id
+     * - The contract does not have to be paused
+     * @param eventId ( uint256 ) EventId for the new token
+     * @param tokenId ( uint256 ) Token Id for the new token
+     * @param to ( address ) The address that will receive the minted tokens.
+     * @return A boolean that indicates if the operation was successful.
+     */
+    function mintToken(uint256 eventId, uint256 tokenId, address to)
+    public whenNotPaused onlyEventMinter(eventId) returns (bool)
+    {
+        return _mintToken(eventId, tokenId, to);
+    }
+
+    /**
+     * @dev Mint token to many addresses.
+     * Requires 
+     * - The msg sender to be the admin, or event minter for the specific event Id
+     * - The contract does not have to be paused
+     * @param eventId ( uint256 ) EventId for the new token
+     * @param to ( array of address ) The addresses that will receive the minted tokens.
+     * @return A boolean that indicates if the operation was successful.
+     */
+    function mintEventToManyUsers(uint256 eventId, address[] memory to)
+    public whenNotPaused onlyEventMinter(eventId) returns (bool)
+    {
+        for (uint256 i = 0; i < to.length; ++i) {
+            _mintToken(eventId, lastId + 1 + i, to[i]);
+        }
+        lastId += to.length;
+        return true;
+    }
+
+    /**
+     * @dev Mint many tokens to address.
+     * Requires 
+     * - The msg sender to be the admin
+     * - The contract does not have to be paused
+     * @param eventIds ( array uint256 ) Event Ids to assing to user
+     * @param to ( address ) The address that will receive the minted tokens.
+     * @return A boolean that indicates if the operation was successful.
+     */
+    function mintUserToManyEvents(uint256[] memory eventIds, address to)
+    public whenNotPaused onlyAdmin() returns (bool)
+    {
+        for (uint256 i = 0; i < eventIds.length; ++i) {
+            _mintToken(eventIds[i], lastId + 1 + i, to);
+        }
+        lastId += eventIds.length;
+        return true;
+    }
+
+    /**
+     * @dev Burns a specific ERC721 token.
+     * Requires 
+     * - The msg sender to be the owner, approved, or admin
+     * @param tokenId ( uint256 ) Id of the ERC721 token to be burned.
+     */
+    function burn(uint256 tokenId) public {
+        require(_isApprovedOrOwner(msg.sender, tokenId) || isAdmin(msg.sender), "Sender doesn't have permission");
+        _burn(tokenId);
+    }
+
+    function initialize(string memory __name, string memory __symbol, string memory __baseURI, address[] memory admins)
+    public initializer
+    {
+        ERC721.initialize();
+        ERC721Enumerable.initialize();
+        PoapRoles.initialize(msg.sender);
+        PoapPausable.initialize();
+
+        // Add the requested admins
+        for (uint256 i = 0; i < admins.length; ++i) {
+            _addAdmin(admins[i]);
+        }
+
+        _name = __name;
+        _symbol = __symbol;
+        _baseURI = __baseURI;
+
+        // Register the supported interfaces to conform to ERC721 via ERC165
+        _registerInterface(_INTERFACE_ID_ERC721_METADATA);
+    }
+
+    /**
+     * @dev Internal function to burn a specific token
+     * - Reverts if the token does not exist
+     * @param owner ( addreess ) The owner of the token to burn
+     * @param tokenId ( uint256 ) ID of the token being burned by the msg.sender
+     */
+    function _burn(address owner, uint256 tokenId) internal {
+        super._burn(owner, tokenId);
+
+        delete _tokenEvent[tokenId];
+    }
+
+    /**
+     * @dev Internal function to mint tokens
+     * @param eventId ( uint256 ) EventId for the new token
+     * @param tokenId ( uint256 ) The token id to mint.
+     * @param to ( address ) The address that will receive the minted tokens.
+     * @return A boolean that indicates if the operation was successful.
+     */
+    function _mintToken(uint256 eventId, uint256 tokenId, address to) internal returns (bool) {
+        _mint(to, tokenId);
+        _tokenEvent[tokenId] = eventId;
+        emit EventToken(eventId, tokenId);
+        return true;
+    }
+
+    /**
+     * @dev Function to convert uint to string
+     * Taken from https://github.com/oraclize/ethereum-api/blob/master/oraclizeAPI_0.5.sol
+     */
+    function _uint2str(uint _i) internal pure returns (string memory _uintAsString) {
+        if (_i == 0) {
+            return "0";
+        }
+        uint j = _i;
+        uint len;
+        while (j != 0) {
+            len++;
+            j /= 10;
+        }
+        bytes memory bstr = new bytes(len);
+        uint k = len - 1;
+        while (_i != 0) {
+            bstr[k--] = byte(uint8(48 + _i % 10));
+            _i /= 10;
+        }
+        return string(bstr);
+    }
+
+    /**
+     * @dev Function to concat strings
+     * Taken from https://github.com/oraclize/ethereum-api/blob/master/oraclizeAPI_0.5.sol
+     */
+    function _strConcat(string memory _a, string memory _b, string memory _c, string memory _d, string memory _e)
+    internal pure returns (string memory _concatenatedString)
+    {
+        bytes memory _ba = bytes(_a);
+        bytes memory _bb = bytes(_b);
+        bytes memory _bc = bytes(_c);
+        bytes memory _bd = bytes(_d);
+        bytes memory _be = bytes(_e);
+        string memory abcde = new string(_ba.length + _bb.length + _bc.length + _bd.length + _be.length);
+        bytes memory babcde = bytes(abcde);
+        uint k = 0;
+        uint i = 0;
+        for (i = 0; i < _ba.length; i++) {
+            babcde[k++] = _ba[i];
+        }
+        for (i = 0; i < _bb.length; i++) {
+            babcde[k++] = _bb[i];
+        }
+        for (i = 0; i < _bc.length; i++) {
+            babcde[k++] = _bc[i];
+        }
+        for (i = 0; i < _bd.length; i++) {
+            babcde[k++] = _bd[i];
+        }
+        for (i = 0; i < _be.length; i++) {
+            babcde[k++] = _be[i];
+        }
+        return string(babcde);
+    }
+
+    /**
+     * @dev Admin can remove other Admin.
+     * @param account ( address ) Address of the admin to be removed
+     */
+    function removeAdmin(address account) public onlyAdmin {
+        _removeAdmin(account);
+    }
+}
+\end{lstlisting}
+\chapter{POI Smart Contract}
+\begin{lstlisting}[language=Java, name={POI Smart Contract}, label={sc:poiContract}]
+pragma solidity ^0.8.0;
+
+import "@appliedzkp/semaphore-contracts/interfaces/IVerifier.sol";
+import "@appliedzkp/semaphore-contracts/interfaces/ISemaphore.sol";
+import "@appliedzkp/semaphore-contracts/base/SemaphoreCore.sol";
+import "@appliedzkp/semaphore-contracts/base/SemaphoreGroups.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+
+/// @title POI contract. (Proof Of Invitation)
+contract POI is ISemaphore, SemaphoreCore, SemaphoreGroups, Ownable, AccessControl {
+  bytes32 public constant CONTROLER_ROLE = keccak256("CONTROLER_ROLE");
+  IVerifier public verifier;
+
+  constructor(address _verifier) {
+    verifier = IVerifier(_verifier);
+    _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    _setupRole(CONTROLER_ROLE, msg.sender);
+  }
+
+  function addControler(address account)
+    public virtual onlyRole(DEFAULT_ADMIN_ROLE)
+  {
+    grantRole(CONTROLER_ROLE, account);
+  }
+
+  function removeControler(address account)
+    public virtual onlyRole(DEFAULT_ADMIN_ROLE)
+  {
+    revokeRole(CONTROLER_ROLE, account);
+  }
+
+  function renounceControler()
+    public virtual onlyRole(CONTROLER_ROLE)
+  {
+    renounceRole(CONTROLER_ROLE, msg.sender);
+  }
+
+  function createGroup(
+    uint256 groupId,
+    uint8 depth,
+    uint256 zeroValue,
+    address admin
+  ) external override onlyRole(CONTROLER_ROLE) {
+    _createGroup(groupId, depth, zeroValue);
+    emit GroupAdminUpdated(groupId, address(0), admin);
+  }
+
+  function updateGroupAdmin(uint256 groupId, address newAdmin) external override onlyRole(CONTROLER_ROLE) {
+    emit GroupAdminUpdated(groupId, _msgSender(), newAdmin);
+  }
+
+  function addMember(uint256 groupId, uint256 identityCommitment) external override onlyRole(CONTROLER_ROLE) {
+    _addMember(groupId, identityCommitment);
+  }
+
+  function removeMember(
+    uint256 groupId,
+    uint256 identityCommitment,
+    uint256[] calldata proofSiblings,
+    uint8[] calldata proofPathIndices
+  ) external override onlyRole(CONTROLER_ROLE) {
+    _removeMember(groupId, identityCommitment, proofSiblings, proofPathIndices);
+  }
+
+  function verifyProof(
+    uint256 groupId,
+    bytes32 signal,
+    uint256 nullifierHash,
+    uint256 externalNullifier,
+    uint256[8] calldata proof
+  ) external override onlyRole(CONTROLER_ROLE){
+    uint256 root = getRoot(groupId);
+    require(root != 0, "Semaphore: group does not exist");
+    _verifyProof(signal, root, nullifierHash, externalNullifier, proof, verifier);
+    _saveNullifierHash(nullifierHash);
+    emit ProofVerified(groupId, signal);
+  }
+}
+\end{lstlisting}
 \end{document}

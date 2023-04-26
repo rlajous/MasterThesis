@@ -2,6 +2,34 @@
 In this study, we have presented an event management system that leverages zero-knowledge proofs to protect the privacy of attendees. The system combines a frontend, backend, and an Ethereum smart contract for efficient and secure operation. Through the use of zk-SNARKs, participants' identities remain confidential while still allowing for event organisers to manage and verify attendance.
 Throughout the development and testing process, we encountered various challenges and limitations, which provided valuable insights into the current state of zero-knowledge technology. In this section, we will discuss some of the key observations and implications of our findings.
 
+\section{Addressing Research Questions}
+In the course of this study, we have addressed the research questions and provided insights into the practical implementation of zero-knowledge proofs for privacy-preserving event management. In this section, we will recap how each research question was answered:
+
+\begin{enumerate}
+\item \textbf{Is there a way to prove ownership without giving away personal information?}\
+Yes, zero-knowledge proofs, such as zk-SNARKs, enable proving ownership without revealing personal information. This technology has been applied to our event management system to ensure participants' privacy while verifying attendance.
+\item \textbf{What is Zero Knowledge Proof?}\\
+A zero-knowledge proof is a cryptographic technique that allows one party to prove to another that they possess certain knowledge without revealing the underlying information. This concept was introduced in Chapter 2, where we discussed the principles of zero-knowledge proofs and their importance in preserving privacy.
+
+\item \textbf{How does it work?}\\
+Zero-knowledge proofs work by transforming statements about the secret information into equivalent statements that do not reveal the secret. In Chapter 2, we discussed zk-SNARKs, a specific type of zero-knowledge proof, and their application in our event management system.
+
+\item \textbf{What are the existing implementations of Zero Knowledge Proofs in the context of blockchain technology?}\\
+In Chapter 2, we examined existing implementations of zero-knowledge proofs in blockchain technology, such as Zcash and Aztec Protocol. We also analyzed their applications and limitations in the context of privacy-preserving systems.
+
+\item \textbf{What are the limitations and challenges of using Zero-Knowledge Proofs for event management?}\\
+Some limitations and challenges include scalability, ease of use, integration with existing systems, and legal and regulatory compliance. These issues were discussed in the Discussion chapter, where we explored their implications and potential solutions.
+
+\item \textbf{How can Zero Knowledge Proofs be integrated into existing event management platforms and ecosystems?}\\
+In Chapter 3, we described the design and implementation of our event management system, which integrated zero-knowledge proofs into its core functionalities. This served as a practical example of how zero-knowledge proofs can be incorporated into existing event management platforms and ecosystems to enhance privacy protection.
+
+\item \textbf{What potential security risks are associated with Zero Knowledge Proofs, and how can they be mitigated?}\\
+Security risks associated with zero-knowledge proofs include potential vulnerabilities in the underlying cryptographic algorithms, implementation errors, and attacks on the anonymity set. In the course of this study, we discussed possible mitigation strategies, such as using well-vetted cryptographic libraries, rigorous testing, and regular security audits.
+
+\end{enumerate}
+
+The hypothesis formulated at the beginning of this thesis was: ``Can the current state-of-the-art of Zero Knowledge Proof be applied to create a practical solution for privacy-preserving event management?'' Based on the findings and discussions presented throughout this study, we can conclude that the current state-of-the-art of zero-knowledge proofs can indeed be applied to create practical solutions for privacy-preserving event management, as demonstrated by our event management system.
+
 \section{Scalability}
 One of the primary concerns with the system is its scalability, particularly when dealing with a large number of event attendees. As the number of participants increases, the time required to generate zk-SNARK proofs and the complexity of the Merkle tree used to store the commitments may also grow. This could potentially lead to performance bottlenecks, which may affect the overall user experience. Further research is necessary to optimise the performance and scalability of the system to accommodate larger events.
 
